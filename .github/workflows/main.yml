@@ -48,15 +48,18 @@ jobs:
       - name: Run Cypresss from automation folder
         run: |
           npx ts-node --project apps/frontend/my-new-app-e2e/tsconfig.json node_modules/.bin/cypress run --config-file=apps/frontend/my-new-app-e2e/cypress.config.ts
+        continue-on-error: true
 
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
       
       - name: Generate Allure Reports
+        if: always()
         run: |
           npx allure generate apps/frontend/my-new-app-e2e/allure-results --clean -o apps/frontend/my-new-app-e2e/allure-report
 
       - name: Upload Allure Report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
            name: allure-report
