@@ -1,3 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","50163","User Logs into Visitcloud page","","Fri Jul 18 16:40:25 IST 2025","passed","Fri Jul 18 16:41:15 IST 2025","","login to Visitcloud page","",""
-"","266","User Logout Visitcloud page","","Fri Jul 18 16:41:20 IST 2025","failed","Fri Jul 18 16:41:21 IST 2025","","logout to Visitcloud page","",""
