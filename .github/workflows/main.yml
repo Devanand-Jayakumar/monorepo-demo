@@ -54,7 +54,7 @@ jobs:
         run: npm install -g allure-commandline --save-dev
 
       - name: Debug:check allure-results folder exists
-        run: ls -R apps/frontend/my-new-app-e2e
+        run: ls -R
       
       - name: Generate Allure Reports
         if: always()
