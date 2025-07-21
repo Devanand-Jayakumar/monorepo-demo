@@ -1,3 +1,3 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","59455","User Logs into Visitcloud page","","Mon Jul 21 10:45:15 UTC 2025","passed","Mon Jul 21 10:46:14 UTC 2025","","login to Visitcloud page","",""
-"","171","User Logout Visitcloud page","","Mon Jul 21 10:46:17 UTC 2025","failed","Mon Jul 21 10:46:17 UTC 2025","","logout to Visitcloud page","",""
+"","56239","User Logs into Visitcloud page","","Mon Jul 21 11:01:08 UTC 2025","passed","Mon Jul 21 11:02:04 UTC 2025","","login to Visitcloud page","",""
+"","190","User Logout Visitcloud page","","Mon Jul 21 11:02:06 UTC 2025","failed","Mon Jul 21 11:02:07 UTC 2025","","logout to Visitcloud page","",""
