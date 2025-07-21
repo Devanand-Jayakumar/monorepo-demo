@@ -29,6 +29,12 @@ on:
            - staging
            - qa
            - prod
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   cypress-run:
     runs-on: ubuntu-24.04
@@ -75,12 +81,12 @@ jobs:
            name: allure-report
            path: allure-report
 
-      # - name: Deploy Allure Report to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v4
-      #   with:
-      #      github_token: ${{secrets.GITHUB_TOKEN}}
-      #      publish_branch: gh-pages
-      #      publish_dir: apps/frontend/my-new-app-e2e
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+           github_token: ${{secrets.GITHUB_TOKEN}}
+           publish_branch: gh-pages
+           publish_dir: allure-report
 
       - name: Exit after upload
         run: exit 0
