@@ -8,7 +8,9 @@ export default defineConfig({
   e2e: {
     setupNodeEvents: async (on, config) => {
       await addCucumberPreprocessorPlugin(on, config);
-      allureWriter(on, config);
+      allureWriter(on, config, {
+        resultDir: 'apps/frontend/my-new-app-e2e/allure-results'
+      });
       on("file:preprocessor", createBundler({
         plugins: [createEsbuildPlugin(config)],
       }));
