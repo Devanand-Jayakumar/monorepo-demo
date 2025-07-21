@@ -52,6 +52,9 @@ jobs:
 
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
+
+      - name: Debug:check allure-results folder exists
+        run: ls _R apps/frontend/my-new-app-e2e
       
       - name: Generate Allure Reports
         if: always()
