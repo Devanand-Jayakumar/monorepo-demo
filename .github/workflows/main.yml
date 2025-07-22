@@ -101,10 +101,15 @@ jobs:
           destination_dir: ${{ env.REPORT_FOLDER }}
           keep_files: true
  
-      - name: Generate index.html with links to all reports
+      - name: Generate index.html with logo and links to all reports
         run: |
           mkdir -p index-temp
           echo "<html><body><h1>Allure Reports</h1><ul>" > index-temp/index.html
+          echo "<h1>Test Reports</h1>" >> index-temp/index.html
+          # Add allure logo with link
+          echo "<a href='./'><img src='https://raw.githubusercontent.com/allure-framework/allure2/master/allure-generator/src/main/javascript/plugins/behaviors-plugin/static/icon.svg' alt='Allure Logo' width='100'>" >> index-temp/index.html
+          echo "<p>Click the logo to go to reports folder.</p>" >> index-temp/index.html
+          echo "<ul>" >> index-temp/index.html
           git fetch origin gh-pages
           git checkout origin/gh-pages -- .
           for dir in $(ls -d 20*/ | sort -r); do
