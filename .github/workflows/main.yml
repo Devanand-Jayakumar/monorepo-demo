@@ -81,13 +81,43 @@ jobs:
            name: allure-report
            path: allure-report
 
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Download Allure report artifact
+        uses: actions/download-artifact@v4
         with:
-           github_token: ${{secrets.GITHUB_TOKEN}}
-           publish_branch: gh-pages
-           publish_dir: allure-report
-           destination_dir: reports/run-${{ github.run_number}}
-
+          name: allure-report
+          path: allure-report
+ 
+      - name: Set datetime-based folder name
+        id: time
+        run: |
+          REPORT_FOLDER=$(date +'%Y-%m-%d_%H-%M')
+          echo "REPORT_FOLDER=$REPORT_FOLDER" >> $GITHUB_ENV
+ 
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: ${{ env.REPORT_FOLDER }}
+          keep_files: true
+ 
+      - name: Generate index.html with links to all reports
+        run: |
+          mkdir -p index-temp
+          echo "<html><body><h1>Allure Reports</h1><ul>" > index-temp/index.html
+          git fetch origin gh-pages
+          git checkout origin/gh-pages -- .
+          for dir in $(ls -d 20*/ | sort -r); do
+            echo "<li><a href='${dir}index.html'>${dir}</a></li>" >> index-temp/index.html
+          done
+          echo "</ul></body></html>" >> index-temp/index.html
+ 
+      - name: Deploy updated index.html
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./index-temp
+          keep_files: true
+          
       - name: Exit after upload
         run: exit 0
