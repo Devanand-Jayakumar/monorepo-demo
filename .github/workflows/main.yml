@@ -101,50 +101,10 @@ jobs:
           destination_dir: ${{ env.REPORT_FOLDER }}
           keep_files: true
  
-      - name: Generate styled index.html with logo
-        run: |
-           mkdir -p index-temp
-           cat <<EOF > index-temp/index.html
-           <html>
-             <head>
-               <title>Allure Reports</title>
-               <style>
-                 body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-                 h1 { font-size: 32px; color: #333; }
-                 h2 { font-size: 24px; color: #555; }
-                 img { margin-top: 20px; }
-                 a { text-decoration: none; color: #1a73e8; }
-                 ul { list-style: none; padding: 0; margin-top: 30px; }
-                 li { margin-bottom: 10px; }
-               </style>
-             </head>
-             <body>
-               <h1>Allure Reports</h1>
-               <h2>Test Execution History</h2>
-               <a href="./">
-                 <img src="https://avatars.githubusercontent.com/u/28248335?s=200&v=4" alt="Allure Logo" width="120" />
-               </a>
-               <p><a href="./">Click the logo or a date below to view a report</a></p>
-               <ul>
-           EOF
-           
-           git fetch origin gh-pages
-           git checkout origin/gh-pages -- .
- 
-           for dir in $(ls -d 20*/ | sort -r); do
-             echo "<li><a href='${dir}index.html'>${dir}</a></li>" >> index-temp/index.html
-           done
- 
-           echo "</ul></body></html>" >> index-temp/index.html
-      - name: Generate index.html with logo and links to all reports
+      - name: Generate index.html with links to all reports
         run: |
           mkdir -p index-temp
           echo "<html><body><h1>Allure Reports</h1><ul>" > index-temp/index.html
-          echo "<h1>Test Reports</h1>" >> index-temp/index.html
-          # Add allure logo with link
-          echo "<a href='./'><img src='https://raw.githubusercontent.com/allure-framework/allure2/master/allure-generator/src/main/javascript/plugins/behaviors-plugin/static/icon.svg' alt='Allure Logo' width='100'>" >> index-temp/index.html
-          echo "<p>Click the logo to go to reports folder.</p>" >> index-temp/index.html
-          echo "<ul>" >> index-temp/index.html
           git fetch origin gh-pages
           git checkout origin/gh-pages -- .
           for dir in $(ls -d 20*/ | sort -r); do
