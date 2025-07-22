@@ -73,7 +73,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git clone --branch gh-pages https://github.com/$GITHUB_REPOSITORY gh-pages-temp
           mkdir -p reports
-          run_id = "run-${{ github.run_number }}"
+          run_id ="run-${{ github.run_number }}"
           mkdir -p reports/$run_id
           shopt -s extglob
           mv !(reports) reports/$run_id || true
