@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"c7b52ac245be21afe8414934c25c89ff","name":"logout to Visitcloud page","statistic":{"failed":1,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":1}},{"uid":"57f7610d66fd654092b980db4e3531d0","name":"login to Visitcloud page","statistic":{"failed":0,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":1}}]}
