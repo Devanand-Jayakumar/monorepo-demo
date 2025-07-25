@@ -2,10 +2,15 @@ import NxWelcome from './nx-welcome';
 
 import { Route, Routes, Link } from 'react-router-dom';
 
+import { OrgInformaUiComponents } from '@org-informa/ui-components';
+import {utilPingIdentity} from '@org-informa/shared-util-ping-identity';
+
 export function App() {
   return (
     <div>
       <NxWelcome title="@org-informa/my-new-app" />
+      <OrgInformaUiComponents />
+      <p>{utilPingIdentity()}</p>
 
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}

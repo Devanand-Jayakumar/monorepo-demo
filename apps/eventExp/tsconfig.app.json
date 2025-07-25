@@ -48,5 +48,13 @@
     "eslint.config.js",
     "eslint.config.cjs",
     "eslint.config.mjs"
+  ],
+  "references": [
+    {
+      "path": "../../libs/shared/util-ping-identity/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/shared/ui-components/tsconfig.lib.json"
+    }
   ]
 }

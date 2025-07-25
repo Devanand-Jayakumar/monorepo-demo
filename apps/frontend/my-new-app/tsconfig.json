@@ -3,6 +3,12 @@
   "include": [],
   "references": [
     {
+      "path": "../../../libs/shared/util-ping-identity"
+    },
+    {
+      "path": "../../../libs/shared/ui-components"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {
