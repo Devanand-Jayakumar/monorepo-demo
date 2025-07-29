@@ -1,5 +1,8 @@
 {
   "name": "@org-informa/my-new-app",
   "version": "2.0.0",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@org-informa/ui-components":"*"
+  }
 }
