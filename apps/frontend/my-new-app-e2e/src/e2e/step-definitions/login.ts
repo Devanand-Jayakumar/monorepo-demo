@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import LoginPage from '../login/LoginPage.po';
+import LoginPage from '../object-model/LoginPage';
 
 const loginPage = new LoginPage()
 
