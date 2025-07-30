@@ -22,6 +22,23 @@
   "nx": {
     "tags": [
       "scope:admin"
-    ]
+    ],
+    "targets": {
+      "serve": {
+        "executor": "@nx/vite:dev-server",
+        "defaultConfiguration": "development",
+        "options": {
+          "buildTarget": "@org-informa/eventExp:build"
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@org-informa/eventExp:build"
+          },
+          "production": {
+            "buildTarget": "@org-informa/eventExp:build:production"
+          }
+        }
+      }
+    }
   }
 }
