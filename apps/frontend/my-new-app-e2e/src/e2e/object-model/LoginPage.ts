@@ -3,16 +3,13 @@
 class LoginPage{
 
      getUrl(){
-       cy.wait(12000);
         return cy.visit('https://visitcloud.com/')
     }
 
     getBookDemo(){
-      cy.wait(12000);
         return cy.contains('Book a demo').first();
     }
     getFirstName(){
-       cy.wait(12000);
         return cy.get('[name="mf-listing-fname"]').first();
     }
     getLastName(){

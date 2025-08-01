@@ -1,0 +1,13 @@
+{
+  "stepDefinitions": [
+    "[filepath]/**/*.{js,ts}",
+    "[filepath].{js,ts}",
+    "src/e2e/step-definitions/*.{js,ts}"
+  ],
+  "html": {
+    "enabled": false
+  },
+  "messages": {
+    "enabled": false
+  }
+}

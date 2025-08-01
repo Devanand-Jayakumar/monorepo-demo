@@ -48,8 +48,8 @@ function getLastReportFolder(): string | null {
  
 function runAllureGeneration() {
   const timestamp = getTimestamp();
-  const baseResults = 'apps/frontend/my-new-app-e2e/allure-results';
-  const baseReports = 'apps/frontend/my-new-app-e2e/allure-report';
+  const baseResults = 'allure-results';
+  const baseReports = 'allure-report';
  
   // Move results to timestamped folder
   const resultDir = moveResultsToTimestampedFolder(baseResults, timestamp);
@@ -66,7 +66,7 @@ function runAllureGeneration() {
   console.log(`Allure report generated at ${reportDir}`);
  
   // Open report
-  execSync(`allure open ${reportDir}`);
+ // execSync(`allure open ${reportDir}`);
 }
  
 runAllureGeneration();

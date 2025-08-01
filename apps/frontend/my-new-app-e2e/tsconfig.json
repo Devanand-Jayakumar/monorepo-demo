@@ -7,7 +7,7 @@
     "outDir": "out-tsc/cypress",
 
     "allowJs": true,
-    "module" : "CommonJS",
+    "module" : "ES2015",
     "target":"ES6",
 
     "types": ["cypress", "node"],
