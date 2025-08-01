@@ -1,6 +1,6 @@
 Feature: logout to Visitcloud page
 
-    Scenario: @C167925 User Logout Visitcloud page
+    Scenario: @C167928 User Logout Visitcloud page
     Given user open the Visitcloud Login Page
     When user click on the Book Demo Button
     And user enters first name and last name

@@ -17,14 +17,12 @@ export default defineConfig({
       allure: true,
       allureReuseAfterSpec: true
     },
-   // specPattern: "apps/frontend/my-new-app-e2e/src/e2e/features/**/*.feature",
-    // supportFile: "apps/frontend/my-new-app-e2e/src/support/e2e.ts",
     specPattern: "src/e2e/features/**/*.feature",
     supportFile: "src/support/e2e.ts",
     baseUrl: "https://visitcloud.com/", // Change as needed
   },
   video: true,
-  videosFolder: 'apps/frontend/my-new-app-e2e/cypress/videos',
+  videosFolder: '/cypress/videos',
   reporter: require.resolve('mochawesome'),
   reporterOptions: {
     reportDir: 'cypress/results',

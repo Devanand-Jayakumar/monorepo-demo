@@ -12,6 +12,8 @@
   "dependencies": {
     "@react-router/node": "^7.2.0",
     "@react-router/serve": "^7.2.0",
+    "@types/form-data": "^2.2.1",
+    "form-data": "^4.0.4",
     "isbot": "^4.4.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",

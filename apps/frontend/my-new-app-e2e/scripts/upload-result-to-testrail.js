@@ -40,6 +40,7 @@ var axios_1 = require("axios");
 var fs = require("fs");
 var path = require("path");
 var https = require("https");
+var FormData = require('form-data');
 var dotenv_1 = require("dotenv");
 (0, dotenv_1.config)(); // Load environment variables from .env file
 var _a = process.env, TESTRAIL_HOST = _a.TESTRAIL_HOST, TESTRAIL_USERNAME = _a.TESTRAIL_USERNAME, TESTRAIL_API_KEY = _a.TESTRAIL_API_KEY, TESTRAIL_PROJECT_ID = _a.TESTRAIL_PROJECT_ID, TESTRAIL_SUITE_ID = _a.TESTRAIL_SUITE_ID, TESTRAIL_RUN_NAME = _a.TESTRAIL_RUN_NAME;
@@ -70,31 +71,71 @@ function createTestRun(caseIds) {
         });
     });
 }
+// async function addTestResults(runId: number, results: TestResult[]): Promise<void> {
+//     try {
+//         await testrail.post(`/add_results_for_cases/${runId}`, { results });
+//     } catch (err: any) {
+//         console.error(err); // Use console.error for error logging
+//     }
+// }
 function addTestResults(runId, results) {
     return __awaiter(this, void 0, void 0, function () {
-        var res, err_1;
+        var _i, results_1, result, response, resultId, formData, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, testrail.post("/add_results_for_cases/".concat(runId), { results: results })];
+                    _i = 0, results_1 = results;
+                    _a.label = 1;
                 case 1:
-                    res = _a.sent();
-                    console.log(res.status);
-                    return [3 /*break*/, 3];
+                    if (!(_i < results_1.length)) return [3 /*break*/, 8];
+                    result = results_1[_i];
+                    _a.label = 2;
                 case 2:
+                    _a.trys.push([2, 6, , 7]);
+                    return [4 /*yield*/, testrail.post("/add_result_for_case/".concat(runId, "/").concat(result.case_id), {
+                            status_id: result.status_id,
+                            comment: result.comment,
+                        })];
+                case 3:
+                    response = _a.sent();
+                    resultId = response.data.id;
+                    if (!result.screenshot_path) return [3 /*break*/, 5];
+                    formData = new FormData();
+                    formData.append('attachment', fs.createReadStream(result.screenshot_path));
+                    return [4 /*yield*/, testrail.post("/add_attachment_to_result/".concat(resultId), formData, {
+                            headers: formData.getHeaders(),
+                        })];
+                case 4:
+                    _a.sent();
+                    _a.label = 5;
+                case 5: return [3 /*break*/, 7];
+                case 6:
                     err_1 = _a.sent();
-                    console.error(err_1); // Use console.error for error logging
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    console.error("Failed to upload screenshot for case ".concat(result.case_id), err_1);
+                    return [3 /*break*/, 7];
+                case 7:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 8: return [2 /*return*/];
             }
         });
     });
 }
+function findScreenshotForCase(caseId, screenshotRoot) {
+    var casePattern = new RegExp("C".concat(caseId, "\\D"));
+    var walk = function (dir) {
+        return fs.readdirSync(dir).flatMap(function (file) {
+            var fullPath = path.join(dir, file);
+            return fs.statSync(fullPath).isDirectory() ? walk(fullPath) : [fullPath];
+        });
+    };
+    var allFiles = walk(screenshotRoot);
+    return allFiles.find(function (file) { return casePattern.test(path.basename(file)); });
+}
 function extractCaseIdsAndResultsFromJson() {
     var resultDir = './cypress/results';
-    var files = fs.readdirSync(resultDir).filter(function (f) { return f.endsWith('mochawesome.json'); });
-    console.log("Found result files: ".concat(files.join(', ')));
+    var screenshotDir = './cypress/screenshots';
+    var files = fs.readdirSync(resultDir).filter(function (f) { return f.endsWith('.json'); });
     var caseResults = [];
     files.forEach(function (file) {
         var content = JSON.parse(fs.readFileSync(path.join(resultDir, file), 'utf-8'));
@@ -105,10 +146,12 @@ function extractCaseIdsAndResultsFromJson() {
                     var caseIdMatch = title.match(/C(\d+)/);
                     if (caseIdMatch) {
                         var caseId = parseInt(caseIdMatch[1], 10);
+                        var screenshotFile = findScreenshotForCase(caseId, screenshotDir);
                         caseResults.push({
                             case_id: caseId,
                             status_id: test.state === 'passed' ? 1 : 5,
                             comment: test.err && test.err.message ? test.err.message : 'Test passed successfully',
+                            screenshot_path: screenshotFile,
                         });
                     }
                 });
@@ -124,15 +167,14 @@ function extractCaseIdsAndResultsFromJson() {
             case 0:
                 _a.trys.push([0, 3, , 4]);
                 results = extractCaseIdsAndResultsFromJson();
-                console.log(results);
                 caseIds = results.map(function (r) { return r.case_id; });
                 return [4 /*yield*/, createTestRun(caseIds)];
             case 1:
                 runId = _a.sent();
-                console.log(runId);
                 return [4 /*yield*/, addTestResults(runId, results)];
             case 2:
                 _a.sent();
+                //await uploadScreenshots(runId, results);
                 console.log("Test results uploaded to TestRail (Run ID: ".concat(runId, ")"));
                 return [3 /*break*/, 4];
             case 3:

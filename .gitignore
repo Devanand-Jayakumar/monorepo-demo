@@ -49,4 +49,5 @@ vitest.config.*.timestamp*
 test-output
 
 allure-results
+allure-report
 cypress
