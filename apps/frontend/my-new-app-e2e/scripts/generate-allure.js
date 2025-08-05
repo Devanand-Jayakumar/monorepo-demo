@@ -43,8 +43,8 @@ function getLastReportFolder() {
 }
 function runAllureGeneration() {
     var timestamp = getTimestamp();
-    var baseResults = 'apps/frontend/my-new-app-e2e/allure-results';
-    var baseReports = 'apps/frontend/my-new-app-e2e/allure-report';
+    var baseResults = 'allure-results';
+    var baseReports = 'allure-report';
     // Move results to timestamped folder
     var resultDir = moveResultsToTimestampedFolder(baseResults, timestamp);
     var reportDir = path.join(baseReports, timestamp);
@@ -60,4 +60,4 @@ function runAllureGeneration() {
     (0, child_process_1.execSync)("allure open ".concat(reportDir));
 }
 runAllureGeneration();
-process.exit(0)
+process.exit(0);
