@@ -54,13 +54,9 @@ jobs:
       - name: Run Cypresss from automation folder
         run: |
           npx nx run my-new-app-e2e:e2e
-        continue-on-error: true
-
+          
       - name: Install Allure CLI
         run: npm install -g allure-commandline --save-dev
-
-      - name: Debug:check allure-results folder exists
-        run: ls -R
       
       - name: Generate Allure Reports
         if: always()
@@ -73,14 +69,7 @@ jobs:
         with:
            name: allure-results
            path: allure-results
-           
-      - name: Upload Allure Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-           name: allure-report
-           path: allure-report
-
+         
       - name: Download Allure report artifact
         uses: actions/download-artifact@v4
         with:
