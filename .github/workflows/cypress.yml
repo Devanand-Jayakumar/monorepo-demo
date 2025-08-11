@@ -61,7 +61,7 @@ jobs:
       - name: Generate Allure Reports
         if: always()
         run: |
-          npx allure generate allure-results --clean -o allure-report
+          npx allure generate apps/frontend/my-new-app-e2e/allure-results --clean -o apps/frontend/my-new-app-e2e/allure-report
 
       - name: Upload Allure Results
         if: always()
