@@ -68,13 +68,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
            name: allure-results
-           path: allure-results
+           path: apps/frontend/my-new-app-e2e/allure-results
          
       - name: Download Allure report artifact
         uses: actions/download-artifact@v4
         with:
           name: allure-report
-          path: allure-report
+          path: apps/frontend/my-new-app-e2e/allure-report
  
       - name: Set datetime-based folder name
         id: time
