@@ -22,7 +22,7 @@ export default defineConfig({
     baseUrl: "https://visitcloud.com/", // Change as needed
   },
   video: true,
-  videosFolder: '/cypress/videos',
+  videosFolder: 'cypress/videos',
   reporter: require.resolve('mochawesome'),
   reporterOptions: {
     reportDir: 'cypress/results',
