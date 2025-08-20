@@ -54,6 +54,8 @@ jobs:
           keep_files: true
       - name: Build reports.json
         run: |
+          git fetch origin gh-pages
+          git checkout origin/gh-pages -- .
           node -e "const fs=require('fs'); \
           const isRpt=d=>/^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}$/.test(d) && fs.statSync(d).isDirectory(); \
           const dirs=(fs.existsSync('.')?fs.readdirSync('.'):[]).filter(isRpt).sort().reverse(); \
