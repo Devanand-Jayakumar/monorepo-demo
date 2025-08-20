@@ -52,21 +52,24 @@ jobs:
           publish_dir: ./allure-report
           destination_dir: '${{ env.REPORT_FOLDER }}'
           keep_files: true
-      - name: Generate index.html with links to all reports
+      - name: Build reports.json
         run: |
-          mkdir -p index-temp
-          echo "<html><body><h1>Allure Reports</h1><ul>" > index-temp/index.html
-          git fetch origin gh-pages
-          git checkout origin/gh-pages -- .
-          for dir in $(ls -d 20*/ | sort -r); do
-            echo "<li><a href='${dir}index.html'>${dir}</a></li>" >> index-temp/index.html
-          done
-          echo "</ul></body></html>" >> index-temp/index.html
-      - name: Deploy updated index.html
+          node -e "const fs=require('fs'); \
+          const isRpt=d=>/^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}$/.test(d) && fs.statSync(d).isDirectory(); \
+          const dirs=(fs.existsSync('.')?fs.readdirSync('.'):[]).filter(isRpt).sort().reverse(); \
+          const out={ generatedAt:new Date().toISOString(), \
+          reports: dirs.map(d=>({ folder:d, url:`${d}/index.html` })) }; \
+          fs.writeFileSync('reports.json', JSON.stringify(out,null,2));"
+      - name: Prepare site files
+        run: |
+          mkdir -p site-publish
+          cp reports.json site-publish/
+          cp allure-homepage.html site-publish/index.html
+      - name: Deploy reports.json + index.html
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          publish_dir: ./index-temp
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site-publish
           keep_files: true
       - name: Exit after upload
         run: exit 0
