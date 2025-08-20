@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Allure Reports</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      margin: 2rem;
+    }
+
+    h1 {
+      margin-bottom: .5rem;
+    }
+
+    #meta {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    #search {
+      padding: .5rem;
+      width: 280px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    li {
+      margin: .4rem 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Allure Reports</h1>
+  <div id="meta"></div>
+  <input id="search" placeholder="Filter by folder (e.g. 2025-08)" />
+  <ul id="list"></ul>
+
+  <script>
+    (async () => {
+      const res = await fetch('reports.json', { cache: 'no-store' });
+      const data = await res.json();
+      const list = document.getElementById('list');
+      const meta = document.getElementById('meta');
+      const search = document.getElementById('search');
+
+      meta.textContent = 'Updated: ' + new Date(data.generatedAt).toLocaleString();
+
+      function render(filter = '') {
+        list.innerHTML = '';
+        data.reports
+          .filter(r => r.folder.toLowerCase().includes(filter.toLowerCase()))
+          .forEach(r => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = r.url;
+            a.textContent = r.folder;
+            li.appendChild(a);
+            list.appendChild(li);
+          });
+      }
+      render();
+      search.addEventListener('input', e => render(e.target.value));
+    })();
+  </script>
+</body>
+
+</html>
