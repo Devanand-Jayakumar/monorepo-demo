@@ -15,6 +15,43 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: '${{ github.ref_name }}'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Typescript if using .ts config
+        run: npm install --save-dev ts-node typescript
+      - name: Run Cypresss from automation folder
+        run: |
+          npx nx run my-new-app-e2e:e2e
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
+      - name: Generate Allure Reports
+        if: always()
+        run: >
+          npx allure generate apps/frontend/my-new-app-e2e/allure-results
+          --clean -o apps/frontend/my-new-app-e2e/allure-report
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: apps/frontend/my-new-app-e2e/allure-report
+      - name: Download Allure report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+      - name: Set datetime-based folder name
+        id: time
+        run: |
+          REPORT_FOLDER=$(date +'%Y-%m-%d_%H-%M')
+          echo "REPORT_FOLDER=$REPORT_FOLDER" >> $GITHUB_ENV
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          publish_dir: ./allure-report
+          destination_dir: '${{ env.REPORT_FOLDER }}'
+          keep_files: true
       - name: Build reports.json
         run: |
           git fetch origin gh-pages
@@ -25,14 +62,12 @@ jobs:
             .filter(d => d.isDirectory()).map(d => d.name)
             .filter(name => /^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/.test(name)); // only YYYY-MM-DD_HH-mm format
           fs.writeFileSync('reports.json', JSON.stringify(dirs.sort().reverse(), null, 2));
-          console.log('reports.json generated:', dirs);
           "
       - name: Prepare site files
         run: |
           mkdir -p site-publish
           cp reports.json site-publish/
-          cp allure-homepage.html site-publish/index.html
-      - name: Deploy reports.json + index.html
+      - name: Deploy reports.json
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
