@@ -3,34 +3,6 @@ on:
   push:
     branches: 
      -main
-  workflow_dispatch:
-      inputs:
-        branch:
-          description: Select the branch
-          required: true
-          default: main
-          type: choice
-          options:
-            - main
-            - develop
-        browser:
-          description: Browser to run on
-          required: true
-          default: electron
-          type: choice
-          options:
-            - electron
-            - chrome
-            - firefox
-        environment:
-          description: Environment for E2E
-          required: true
-          default: staging
-          type: choice
-          options:
-            - staging
-            - qa
-            - prod
 permissions:
   contents: write
   pages: write
