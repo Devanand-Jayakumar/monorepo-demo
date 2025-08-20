@@ -1,79 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Allure Reports</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
-      margin: 2rem;
-    }
+  <meta charset="UTF-8">
+  <title>Test Reports Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    h1 {
-      margin-bottom: .5rem;
-    }
-
-    #meta {
-      color: #666;
-      margin-bottom: 1rem;
-    }
-
-    #search {
-      padding: .5rem;
-      width: 280px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 1rem;
-    }
-
-    li {
-      margin: .4rem 0;
-    }
-
-    a {
-      text-decoration: none;
-    }
-  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
-<body>
-  <h1>Allure Reports</h1>
-  <div id="meta"></div>
-  <input id="search" placeholder="Filter by folder (e.g. 2025-08)" />
-  <ul id="list"></ul>
-
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-gray-800">📊 Test Reports Dashboard</h1>
+    <button onclick="loadReports()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+      Refresh
+    </button>
+  </header>
+ 
+  <!-- Content -->
+  <main class="flex-1 p-6">
+    <div id="reportsGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Cards will be injected here -->
+    </div>
+  </main>
+ 
+  <!-- Footer -->
+  <footer class="bg-white shadow p-4 text-center text-gray-500">
+    Generated from <code>reports.json</code> | Last updated: <span id="lastUpdated"></span>
+  </footer>
+ 
   <script>
-    (async () => {
-      const res = await fetch('reports.json', { cache: 'no-store' });
-      const data = await res.json();
-      const list = document.getElementById('list');
-      const meta = document.getElementById('meta');
-      const search = document.getElementById('search');
-
-      meta.textContent = 'Updated: ' + new Date(data.generatedAt).toLocaleString();
-
-      function render(filter = '') {
-        list.innerHTML = '';
-        data.reports
-          .filter(r => r.folder.toLowerCase().includes(filter.toLowerCase()))
-          .forEach(r => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = r.url;
-            a.textContent = r.folder;
-            li.appendChild(a);
-            list.appendChild(li);
-          });
+    async function loadReports() {
+      try {
+        const response = await fetch('reports.json');
+        const data = await response.json();
+ 
+        const grid = document.getElementById('reportsGrid');
+        grid.innerHTML = '';
+ 
+        data.forEach(folder => {
+          const card = document.createElement('a');
+          card.href = folder + '/index.html'; // link to report
+          card.className = "bg-white rounded-2xl shadow hover:shadow-lg transition p-6 flex flex-col";
+          card.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-lg font-semibold text-gray-700">${folder}</span>
+              <i data-lucide="file-chart" class="w-6 h-6 text-blue-600"></i>
+            </div>
+            <p class="text-gray-500">Click to view report</p>
+          `;
+          grid.appendChild(card);
+        });
+ 
+        lucide.createIcons();
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+      } catch (err) {
+        console.error("Failed to load reports.json", err);
       }
-      render();
-      search.addEventListener('input', e => render(e.target.value));
-    })();
+    }
+ 
+    loadReports();
   </script>
 </body>
-
 </html>
+ 
