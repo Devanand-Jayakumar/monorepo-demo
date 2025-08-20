@@ -1,0 +1,1 @@
+[{"uid":"4080bba332c96043","name":"@C167925 User Logs into Visitcloud page","time":{"start":1755663966747,"stop":1755663988884,"duration":22137},"status":"passed","severity":"normal"},{"uid":"add0da362fb8f5af","name":"@C167928 User Logout Visitcloud page","time":{"start":1755663991787,"stop":1755664004038,"duration":12251},"status":"passed","severity":"normal"}]
