@@ -19,11 +19,15 @@ jobs:
         run: |
           git fetch origin gh-pages
           git checkout origin/gh-pages -- .
-          node -e "const fs=require('fs'); \
-          const isRpt=d=>/^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}$/.test(d) && fs.statSync(d).isDirectory(); \
-          const dirs=(fs.existsSync('.')?fs.readdirSync('.'):[]).filter(isRpt).sort().reverse(); \
-          const out={reports: dirs.map(d=>({ folder:d, url:`${d}/index.html`})) }; \
-          fs.writeFileSync('reports.json', JSON.stringify(out,null,2));"
+          node -e 
+          const fs = require('fs');
+          const isRpt = d => /^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}$/.test(d) && fs.statSync(d).isDirectory();
+          const dirs = (fs.existsSync('.') ? fs.readdirSync('.') : []).filter(isRpt).sort().reverse();
+          const out = {
+            generatedAt: new Date().toISOString(),
+            reports: dirs.map(d => ({ folder: d, url: `${d}/index.html` }))
+          };
+          fs.writeFileSync('reports.json', JSON.stringify(out, null, 2));
       - name: Prepare site files
         run: |
           mkdir -p site-publish
