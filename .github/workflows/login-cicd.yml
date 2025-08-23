@@ -1,5 +1,5 @@
 name: Login MFE CI/CD
-
+ 
 on:
   push:
     branches: [main]
@@ -13,10 +13,10 @@ on:
         description: 'Branch to build and deploy'
         required: true
         default: 'main'
-
+ 
 env:
   APP_NAME: 'login-mfe'
-
+ 
 jobs:
   build:
     name: Build, Lint, Test
@@ -24,20 +24,20 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.branch || github.ref }}
-
+ 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://npm.pkg.github.com'
           scope: '@informaplc'
-
+ 
       - name: Cache Yarn dependencies
         uses: actions/cache@v3
         with:
@@ -47,20 +47,20 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-
+ 
       - name: Install dependencies with Yarn
         run: yarn install
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
+ 
       - name: Run ESLint
         run: yarn lint
-
+ 
       - name: Run unit tests with coverage
         run: yarn test:cov --coverage
         env:
           CI: true
-
+ 
       - name: Enforce coverage threshold (≥ 95%)
         run: |
           COVERAGE=$(node -e "const fs=require('fs');const data=JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));console.log(data.total.lines.pct)")
@@ -69,7 +69,7 @@ jobs:
             echo "❌ Coverage below 95%. Failing build."
             exit 1
           fi
-
+ 
       - name: Enforce test pass rate (≥ 95%)
         run: |
           PASS_RATE=$(yarn test:stats | grep 'Pass Rate' | awk '{print $NF}' | tr -d '%')
@@ -78,35 +78,35 @@ jobs:
             echo "❌ Test pass rate below 95%. Failing build."
             exit 1
           fi
-
+ 
       - name: Build App
         run: yarn build
-
+ 
   deploy:
     name: Deploy to Cloudflare Pages (Dev)
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+ 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@informaplc'
-
+ 
       - name: Install dependencies with Yarn
         run: yarn install
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
+ 
       - name: Build project
         run: yarn build
-
+ 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -115,34 +115,35 @@ jobs:
           projectName: 'login-mfe'
           directory: './dist'
           branch: 'main'
-
+ 
       - name: Output CDN URL
-        run: echo "CDN URL: https://${{ env.APP_NAME }}.pages.dev"
-
+        run: |
+          echo "CDN URL: https://${{ env.APP_NAME }}.pages.dev"
+ 
   preview:
     name: Preview Deployment
-    if: github.event_name == 'pull_request'
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+ 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@informaplc'
-
+ 
       - name: Install dependencies with Yarn
         run: yarn install
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
+ 
       - name: Build project
         run: yarn build
-
+ 
       - name: Deploy Preview to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
