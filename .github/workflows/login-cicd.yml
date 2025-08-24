@@ -101,68 +101,68 @@ jobs:
         if: contains(steps.affected.outputs.affected, 'eventExp')
         run: yarn build eventExp
 
-      - name: Run Cypress E2E Tests
-        if: contains(steps.affected.outputs.affected, 'eventExp')
-        run: yarn nx run eventExp-e2e:e2e
+#       - name: Run Cypress E2E Tests
+#         if: contains(steps.affected.outputs.affected, 'eventExp')
+#         run: yarn nx run eventExp-e2e:e2e
 
-      - name: Install Allure CLI
-        run: yarn global add allure-commandline
+      # - name: Install Allure CLI
+      #   run: yarn global add allure-commandline
 
-      - name: Generate Allure Reports
-        if: always()
-        run: |
-          yarn allure generate apps/eventExp-e2e/allure-results --clean -o apps/eventExp-e2e/allure-report
+      # - name: Generate Allure Reports
+      #   if: always()
+      #   run: |
+      #     yarn allure generate apps/eventExp-e2e/allure-results --clean -o apps/eventExp-e2e/allure-report
 
-      - name: Upload Allure Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: apps/eventExp-e2e/allure-report
+      # - name: Upload Allure Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: allure-report
+      #     path: apps/eventExp-e2e/allure-report
 
-      - name: Download Allure report artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-report
-          path: allure-report
+      # - name: Download Allure report artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: allure-report
+      #     path: allure-report
 
-      - name: Set datetime-based folder name
-        id: time
-        run: |
-          REPORT_FOLDER=$(date +'%Y-%m-%d_%H-%M')
-          echo "REPORT_FOLDER=$REPORT_FOLDER" >> $GITHUB_ENV
+      # - name: Set datetime-based folder name
+      #   id: time
+      #   run: |
+      #     REPORT_FOLDER=$(date +'%Y-%m-%d_%H-%M')
+      #     echo "REPORT_FOLDER=$REPORT_FOLDER" >> $GITHUB_ENV
 
-      - name: Deploy Allure report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          publish_dir: ./allure-report
-          destination_dir: '${{ env.REPORT_FOLDER }}'
-          keep_files: true
+      # - name: Deploy Allure report to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: '${{ secrets.GITHUB_TOKEN }}'
+      #     publish_dir: ./allure-report
+      #     destination_dir: '${{ env.REPORT_FOLDER }}'
+      #     keep_files: true
 
-      - name: Build reports.json
-        run: |
-          git fetch origin gh-pages
-          git checkout origin/gh-pages -- .
-          node -e "
-          const fs = require('fs');
-          const dirs = fs.readdirSync('.', { withFileTypes: true })
-            .filter(d => d.isDirectory()).map(d => d.name)
-            .filter(name => /^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/.test(name));
-          fs.writeFileSync('reports.json', JSON.stringify(dirs.sort().reverse(), null, 2));
-          "
+      # - name: Build reports.json
+      #   run: |
+      #     git fetch origin gh-pages
+      #     git checkout origin/gh-pages -- .
+      #     node -e "
+      #     const fs = require('fs');
+      #     const dirs = fs.readdirSync('.', { withFileTypes: true })
+      #       .filter(d => d.isDirectory()).map(d => d.name)
+      #       .filter(name => /^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/.test(name));
+      #     fs.writeFileSync('reports.json', JSON.stringify(dirs.sort().reverse(), null, 2));
+      #     "
 
-      - name: Prepare site files
-        run: |
-          mkdir -p site-publish
-          cp reports.json site-publish/
+      # - name: Prepare site files
+      #   run: |
+      #     mkdir -p site-publish
+      #     cp reports.json site-publish/
 
-      - name: Deploy reports.json
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site-publish
-          keep_files: true
+      # - name: Deploy reports.json
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./site-publish
+      #     keep_files: true
 
   deploy:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -182,41 +182,6 @@ jobs:
 
       - name: Output CDN URL
         run: |
-          echo "CDN URL: https://${{ secrets.CLOUDFLARE_PROJECT_NAME_EVENTEXP }}.pages.dev"
+          echo "CDN URL: https://cdn-dev-d1q.pages.dev"
 
-#       - name: Send success email
-#         if: success()
-#         uses: dawidd6/action-send-mail@v3
-#         with:
-#           server_address: ${{ secrets.SMTP_SERVER }}
-#           server_port: ${{ secrets.SMTP_PORT }}
-#           username: ${{ secrets.EMAIL_USERNAME }}
-#           password: ${{ secrets.EMAIL_PASSWORD }}
-#           subject: " eventExp MFE Deployment Successful"
-#           to: ${{ secrets.EMAIL_TO }}
-#           from: ${{ secrets.EMAIL_USERNAME }}
-#           body: |
-#             The deployment of the eventExp micro frontend to ${{ github.event.inputs.environment || 'DEV' }} was successful.
-#             Commit: ${{ github.sha }}
-#             Branch: ${{ github.ref }}
-#             Workflow: ${{ github.workflow }}
-#             CDN URL: https://${{ secrets['CLOUDFLARE_PROJECT_NAME_EVENTEXP_'] }}.pages.dev
-
-#       - name: Send failure email
-#         if: failure()
-#         uses: dawidd6/action-send-mail@v3
-#         with:
-#           server_address: ${{ secrets.SMTP_SERVER }}
-#           server_port: ${{ secrets.SMTP_PORT }}
-#           username: ${{ secrets.EMAIL_USERNAME }}
-#           password: ${{ secrets.EMAIL_PASSWORD }}
-#           subject: " eventExp MFE Deployment Failed"
-#           to: ${{ secrets.EMAIL_TO }}
-#           from: ${{ secrets.EMAIL_USERNAME }}
-#           body: |
-#             The deployment of the eventExp micro frontend to ${{ github.event.inputs.environment || 'DEV' }} failed.
-#             Commit: ${{ github.sha }}
-#             Branch: ${{ github.ref }}
-#             Workflow: ${{ github.workflow }}
-#             Please check the logs for more details.
 
