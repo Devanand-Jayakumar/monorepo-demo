@@ -39,18 +39,7 @@ jobs:
   build:
     name: Build, Lint, E2E Test, coverage, Sonar and Allure Report
     runs-on: ubuntu-latest
-    
-    # First, determine the Node.js version from package.json
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Get Node.js version from package.json
-        id: node-version
-        run: |
-          NODE_VERSION=$(node -p "require('./package.json').volta.node")
-          echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
-          echo "Using Node.js version: $NODE_VERSION"
+
     
     # Then use that version in the matrix strategy
     strategy:
@@ -61,11 +50,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
+      
+      - name: Get Node.js version from package.json
+        id: node-version
+        run: |
+          NODE_VERSION=$(node -p "require('./package.json').volta.node")
+          echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "Using Node.js version: $NODE_VERSION"
 
       - name: Cache node_modules
         uses: actions/cache@v3
