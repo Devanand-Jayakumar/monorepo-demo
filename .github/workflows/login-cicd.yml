@@ -97,9 +97,20 @@ jobs:
 #           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 #           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
+      # - name: Build App
+      #   if: contains(steps.affected.outputs.affected, 'eventExp')
+      #   run: yarn build eventExp
+
+      - name: Get App Name from Package
+        id: get-app-name
+        run: |
+          FULL_NAME=$(node -p "require('./apps/eventExp/package.json').name")
+          APP_NAME=${FULL_NAME##*/}  # Extract everything after the last slash
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+
       - name: Build App
-        if: contains(steps.affected.outputs.affected, 'eventExp')
-        run: yarn build eventExp
+        if: contains(steps.affected.outputs.affected, steps.get-app-name.outputs.app_name)
+        run: yarn nx build ${{ steps.get-app-name.outputs.app_name }}
 
 #       - name: Run Cypress E2E Tests
 #         if: contains(steps.affected.outputs.affected, 'eventExp')
